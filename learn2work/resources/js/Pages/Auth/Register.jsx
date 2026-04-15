@@ -22,6 +22,7 @@ export default function Register() {
         });
     };
 
+    //Register
     return (
         <GuestLayout>
             <Head title="Register" />
