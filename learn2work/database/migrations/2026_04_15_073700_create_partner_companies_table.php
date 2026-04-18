@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('partner_companies', function (Blueprint $table) {
             $table->id();
+            $table->string('name'); // Nama Perusahaan
+            $table->string('industry'); // Bidang Industri
+            $table->text('description'); // Deskripsi Perusahaan
+            $table->string('logo_url')->nullable(); // Link logo perusahaan
             $table->timestamps();
         });
     }
