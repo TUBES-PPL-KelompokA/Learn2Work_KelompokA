@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('course_id')->constrained()->cascadeOnDelete();
+            $table->string('title');
+            $table->string('content_url')->nullable(); // Link video/materi
+            $table->integer('order_number'); // Urutan modul belajar
             $table->timestamps();
         });
     }
