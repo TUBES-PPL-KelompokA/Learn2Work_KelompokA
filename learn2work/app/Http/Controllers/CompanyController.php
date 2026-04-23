@@ -29,4 +29,10 @@ class CompanyController extends Controller
 
         return back()->with('message', 'Perusahaan Mitra berhasil ditambahkan!');
     }
+
+    public function destroy(PartnerCompany $company)
+    {
+        $company->delete();
+        return back();
+    }
 }
