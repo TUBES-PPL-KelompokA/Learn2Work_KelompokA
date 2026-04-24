@@ -35,6 +35,22 @@ class CourseController extends Controller
 
         return redirect()->route('courses.index')->with('message', 'Kursus berhasil dibuat!');
     }
-    
-    // Method create, edit, update, destroy bisa ditambahkan selanjutnya
+
+    public function show(Course $course)
+    {
+        // Menampilkan detail kursus beserta modulnya (diurutkan berdasarkan nomor)
+        $course->load(['modules' => function ($query) {
+            $query->orderBy('order_number', 'asc');
+        }]);
+        
+        return Inertia::render('Courses/Show', [
+            'course' => $course
+        ]);
+    }
+
+    public function destroy(Course $course)
+    {
+        $course->delete();
+        return redirect()->route('courses.index');
+    }
 }
