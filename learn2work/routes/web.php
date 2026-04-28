@@ -2,8 +2,6 @@
 
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\QuestionController;
-use App\Http\Controllers\QuizController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,8 +27,3 @@ Route::middleware('auth')->group(function () {
     });
 
 require __DIR__.'/auth.php';
-
-Route::post('/modules/{module}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
-Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
-Route::post('/quizzes/{quiz}/questions', [QuestionController::class, 'store'])->name('questions.store');
-Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
