@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('courses', function (Blueprint $table) {
+        Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
-            // Relasi ke tabel users khusus untuk teacher
-            $table->foreignId('teacher_id')->constrained('users')->cascadeOnDelete(); 
+            $table->foreignId('module_id')->constrained()->cascadeOnDelete();
             $table->string('title');
-            $table->text('description');
-            $table->integer('price'); // Harga kursus (karena sistem beli putus)
+            $table->integer('min_score')->default(0); // Nilai KKM untuk lulus kuis
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('courses');
+        Schema::dropIfExists('quizzes');
     }
 };
