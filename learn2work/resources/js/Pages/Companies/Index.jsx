@@ -43,3 +43,34 @@ export default function Index({ companies }) {
                         <button type="submit" disabled={processing} className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Simpan Mitra</button>
                     </form>
                 </div>
+
+                {/* Daftar Perusahaan */}
+                <div className="w-full md:w-2/3 bg-white p-6 shadow sm:rounded-lg">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Daftar Mitra ({companies.length})</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {companies.map((company) => (
+                            <div key={company.id} className="border p-4 rounded-lg flex flex-col justify-between">
+                                <div>
+                                    <div className="flex justify-between items-start mb-2">
+                                        <h4 className="font-bold text-lg">{company.name}</h4>
+                                        <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">{company.industry}</span>
+                                    </div>
+                                    <p className="text-sm text-gray-600 mb-4 line-clamp-3">{company.description}</p>
+                                </div>
+                                <div className="flex justify-between items-center mt-4 pt-4 border-t">
+                                    {company.logo_url ? (
+                                        <a href={company.logo_url} target="_blank" className="text-blue-500 text-sm hover:underline">Lihat Logo</a>
+                                    ) : (
+                                        <span className="text-gray-400 text-sm">Tanpa Logo</span>
+                                    )}
+                                    <Link href={route('companies.destroy', company.id)} method="delete" as="button" className="text-red-600 text-sm hover:underline">Hapus</Link>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+            </div>
+        </AuthenticatedLayout>
+    );
+}
