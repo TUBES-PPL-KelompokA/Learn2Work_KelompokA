@@ -6,6 +6,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\StudentLearningController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,6 +42,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
     Route::post('/quizzes/{quiz}/questions', [QuestionController::class, 'store'])->name('questions.store');
     Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
+
+    // Rute Pendaftaran & Belajar
+    Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'store'])->name('enrollments.store');
+    Route::get('/my-dashboard', [StudentLearningController::class, 'dashboard'])->name('student.dashboard');
+    Route::get('/learn/{course}/{module?}', [StudentLearningController::class, 'learn'])->name('student.learn');
+    Route::post('/learn/{course}/next/{nextModule}', [StudentLearningController::class, 'nextModule'])->name('student.next');
 });
 
 require __DIR__.'/auth.php';
