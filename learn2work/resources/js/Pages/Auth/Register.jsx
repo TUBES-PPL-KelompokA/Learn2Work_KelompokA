@@ -1,139 +1,141 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import GuestLayout from '@/Layouts/GuestLayout';
+import { useState } from 'react';
 
 export default function Register() {
+    const [showPassword, setShowPassword] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
-        role: 'student',
+        role: 'student', // Default and locked to student
     });
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
 
-    //Register
     return (
         <GuestLayout>
-            <Head title="Register" />
+            <Head title="Daftar Akun" />
 
-            <form onSubmit={submit}>
+            <h1 className="mb-2 text-2xl font-extrabold text-white">Buat Akun Baru 🚀</h1>
+            <p className="mb-8 text-sm text-white/50">Bergabung dengan Learn2Work sebagai Siswa</p>
+
+            <form onSubmit={submit} className="space-y-5">
+                {/* Name */}
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
-
-                    <TextInput
+                    <label htmlFor="name" className="block text-sm font-medium text-white/70 mb-1.5">
+                        Nama Lengkap
+                    </label>
+                    <input
                         id="name"
+                        type="text"
                         name="name"
                         value={data.name}
-                        className="mt-1 block w-full"
                         autoComplete="name"
-                        isFocused={true}
+                        autoFocus
                         onChange={(e) => setData('name', e.target.value)}
+                        className="w-full rounded-lg border border-white/10 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-indigo-400 focus:bg-white/15 focus:ring-2 focus:ring-indigo-500/30"
+                        placeholder="Nama Lengkap Anda"
                         required
                     />
-
-                    <InputError message={errors.name} className="mt-2" />
+                    {errors.name && <p className="mt-1.5 text-xs text-red-400">{errors.name}</p>}
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
+                {/* Email */}
+                <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-white/70 mb-1.5">
+                        Alamat Email
+                    </label>
+                    <input
                         id="email"
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
                         autoComplete="username"
                         onChange={(e) => setData('email', e.target.value)}
+                        className="w-full rounded-lg border border-white/10 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-indigo-400 focus:bg-white/15 focus:ring-2 focus:ring-indigo-500/30"
+                        placeholder="email@domain.com"
                         required
                     />
-
-                    <InputError message={errors.email} className="mt-2" />
+                    {errors.email && <p className="mt-1.5 text-xs text-red-400">{errors.email}</p>}
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="role" value="Daftar Sebagai" />
-
-                    <select
-                        id="role"
-                        name="role"
-                        value={data.role}
-                        className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                        onChange={(e) => setData('role', e.target.value)}
-                        required
-                    >
-                        <option value="student">Student (Peserta)</option>
-                        <option value="teacher">Teacher (Pengajar)</option>
-                    </select>
-
-                    <InputError message={errors.role} className="mt-2" />
+                {/* Password */}
+                <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-white/70 mb-1.5">
+                        Kata Sandi
+                    </label>
+                    <div className="relative">
+                        <input
+                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            value={data.password}
+                            autoComplete="new-password"
+                            onChange={(e) => setData('password', e.target.value)}
+                            className="w-full rounded-lg border border-white/10 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-indigo-400 focus:bg-white/15 focus:ring-2 focus:ring-indigo-500/30 pr-10"
+                            placeholder="Min. 8 karakter"
+                            required
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
+                        >
+                            {showPassword ? '👁️' : '👁️‍🗨️'}
+                        </button>
+                    </div>
+                    {errors.password && <p className="mt-1.5 text-xs text-red-400">{errors.password}</p>}
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
+                {/* Confirm Password */}
+                <div>
+                    <label htmlFor="password_confirmation" className="block text-sm font-medium text-white/70 mb-1.5">
+                        Konfirmasi Kata Sandi
+                    </label>
+                    <div className="relative">
+                        <input
+                            id="password_confirmation"
+                            type={showPassword ? 'text' : 'password'}
+                            name="password_confirmation"
+                            value={data.password_confirmation}
+                            autoComplete="new-password"
+                            onChange={(e) => setData('password_confirmation', e.target.value)}
+                            className="w-full rounded-lg border border-white/10 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-indigo-400 focus:bg-white/15 focus:ring-2 focus:ring-indigo-500/30 pr-10"
+                            placeholder="Ulangi kata sandi"
+                            required
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
+                        >
+                            {showPassword ? '👁️' : '👁️‍🗨️'}
+                        </button>
+                    </div>
+                    {errors.password_confirmation && <p className="mt-1.5 text-xs text-red-400">{errors.password_confirmation}</p>}
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel
-                        htmlFor="password_confirmation"
-                        value="Confirm Password"
-                    />
+                <button
+                    type="submit"
+                    disabled={processing}
+                    className="w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-500 disabled:opacity-50"
+                >
+                    {processing ? 'Mendaftarkan...' : 'Buat Akun'}
+                </button>
 
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) =>
-                            setData('password_confirmation', e.target.value)
-                        }
-                        required
-                    />
-
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    <Link
-                        href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Already registered?
+                <p className="text-center text-sm text-white/50">
+                    Sudah punya akun?{' '}
+                    <Link href={route('login')} className="font-semibold text-indigo-400 hover:text-indigo-300 transition">
+                        Masuk sekarang
                     </Link>
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
-                    </PrimaryButton>
-                </div>
+                </p>
             </form>
         </GuestLayout>
     );

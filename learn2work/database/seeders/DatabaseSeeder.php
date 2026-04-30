@@ -17,9 +17,28 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
+        // Create Admin User
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Admin Learn2Work',
+            'email' => 'admin@learn2work.com',
+            'password' => bcrypt('password'),
+            'role' => 'admin',
+        ]);
+
+        // Create a Teacher User
+        User::factory()->create([
+            'name' => 'Teacher Learn2Work',
+            'email' => 'teacher@learn2work.com',
+            'password' => bcrypt('password'),
+            'role' => 'teacher',
+        ]);
+
+        // Create a Student User
+        User::factory()->create([
+            'name' => 'Student Learn2Work',
+            'email' => 'student@learn2work.com',
+            'password' => bcrypt('password'),
+            'role' => 'student',
         ]);
     }
 }

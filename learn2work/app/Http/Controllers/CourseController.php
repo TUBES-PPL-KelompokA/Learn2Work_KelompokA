@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Enrollment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,7 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
+            'duration_days' => 'required|integer|min:1',
         ]);
 
         Course::create([
@@ -31,6 +33,7 @@ class CourseController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'price' => $request->price,
+            'duration_days' => $request->duration_days,
         ]);
 
         return redirect()->route('courses.index')->with('message', 'Kursus berhasil dibuat!');
@@ -40,11 +43,19 @@ class CourseController extends Controller
     {
         // Menampilkan detail kursus beserta modulnya (diurutkan berdasarkan nomor)
         $course->load(['modules' => function ($query) {
-            $query->orderBy('order_number', 'asc');
-        }]);
+            $query->with('quiz')->orderBy('order_number', 'asc');
+        }, 'teacher']);
+        
+        $isEnrolled = false;
+        if (Auth::check()) {
+            $isEnrolled = Enrollment::where('user_id', Auth::id())
+                ->where('course_id', $course->id)
+                ->exists();
+        }
         
         return Inertia::render('Courses/Show', [
-            'course' => $course
+            'course' => $course,
+            'isEnrolled' => $isEnrolled
         ]);
     }
 
