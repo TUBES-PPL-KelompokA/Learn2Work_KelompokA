@@ -12,6 +12,7 @@ class ModuleController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content_url' => 'nullable|url',
+            'text_content' => 'nullable|string',
             'order_number' => 'required|integer|min:1',
         ]);
 
@@ -23,6 +24,20 @@ class ModuleController extends Controller
         ]);
 
         return back(); // Kembali ke halaman detail kursus
+    }
+
+    public function update(Request $request, Module $module)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content_url' => 'nullable|url',
+            'text_content' => 'nullable|string',
+            'order_number' => 'required|integer|min:1',
+        ]);
+
+        $module->update($request->all());
+
+        return back();
     }
 
     public function destroy(Module $module)
