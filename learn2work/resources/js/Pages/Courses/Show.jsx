@@ -62,3 +62,4 @@ export default function Show({ course }) {
         </AuthenticatedLayout>
     );
 }
+
