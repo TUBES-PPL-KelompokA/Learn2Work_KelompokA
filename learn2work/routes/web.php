@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\ProfileController;
@@ -21,6 +22,9 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/courses/{course}/certificate/download', [CertificateController::class, 'download'])
+    ->middleware('auth');
+    
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
