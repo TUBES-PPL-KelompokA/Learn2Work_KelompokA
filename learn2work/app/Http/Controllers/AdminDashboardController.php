@@ -20,3 +20,14 @@ class AdminDashboardController extends Controller
                             ->orderBy('created_at', 'desc')
                             ->take(5)
                             ->get();
+
+        return Inertia::render('Admin/Dashboard', [
+            'stats' => [
+                'revenue' => $totalPendapatan,
+                'pending_payments' => $pembayaranPending,
+                'total_students' => $totalSiswa,
+            ],
+            'recent_transactions' => $transaksiTerbaru
+        ]);
+    }
+}
