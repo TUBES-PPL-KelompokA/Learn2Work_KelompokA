@@ -8,7 +8,18 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CourseAssignmentController extends Controller
-{
+{   
+    public function index()
+    {
+        $courses = Course::with('teacher')->get();
+        $teachers = User::where('role', 'teacher')->get();
+
+        return Inertia::render('Admin/Assignments/Index', [
+            'courses' => $courses,
+            'teachers' => $teachers,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
