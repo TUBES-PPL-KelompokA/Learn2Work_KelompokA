@@ -12,6 +12,7 @@ use App\Http\Controllers\StudentLearningController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\CourseAssignmentController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -61,6 +62,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/quizzes/{quiz}/submit', [App\Http\Controllers\QuizSubmissionController::class, 'store'])->name('quizzes.submit');
 
     Route::post('/learn/{course}/next/{nextModule}', [StudentLearningController::class, 'nextModule'])->name('student.next');
+
+    //Assign Guru
+    Route::get('/admin/assignments', [CourseAssignmentController::class, 'index'])->name('assignments.index');
+    Route::post('/admin/assignments', [CourseAssignmentController::class, 'store'])->name('assignments.store');
+    Route::patch('/admin/assignments/{course}', [CourseAssignmentController::class, 'update'])->name('assignments.update');
 });
 
 require __DIR__ . '/auth.php';
