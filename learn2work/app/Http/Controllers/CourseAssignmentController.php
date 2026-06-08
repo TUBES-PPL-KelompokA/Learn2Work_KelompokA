@@ -32,5 +32,25 @@ class CourseAssignmentController extends Controller
         if($course->teacher_id !== null){
             return back()->withErrors(['course_id' => 'Kursus sudah memiliki guru. Gunakan fitur edit untuk mengganti.']);
         }
+
+        $course->update(['teacher_id' => $request->user_id]);
+        return back()->with('success', 'Guru berhasil ditugaskan ke kursus.');
+    }
+
+    public function update(Request $request, Course $course)
+    {
+        $request->validate([
+            'teacher_id' => 'required|exists:users,id',
+        ]);
+
+        $course->update(['teacher_id' => $request->teacher_id]);
+        return back()->with('success', 'Penugasan guru berhasil diperbarui.');
+    }
+
+    public function destroy(Course $course)
+    {
+        $course->update(['teacher_id' => null]);
+        
+        return back()->with('success', 'Penugasan guru berhasil dihapus.');
     }
 }
