@@ -2,47 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
 use App\Models\Enrollment;
+use App\Models\Course;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class EnrollmentController extends Controller
 {
+    // SISI STUDENT: Halaman Instruksi Pembayaran
     public function payment(Course $course)
     {
-        // Cek apakah user sudah pernah beli kursus ini
-        $exists = Enrollment::where('user_id', Auth::id())->where('course_id', $course->id)->exists();
-        
-        if ($exists) {
-            return redirect()->route('student.learn', $course->id);
-        }
-
-        return Inertia::render('Courses/Payment', [
-            'course' => $course->load('teacher')
+        return Inertia::render('Student/Payment', [
+            'course' => $course
         ]);
     }
 
+    // SISI STUDENT: Upload Bukti Bayar
     public function store(Request $request, Course $course)
     {
-        // Cek apakah user sudah pernah beli kursus ini
-        $exists = Enrollment::where('user_id', Auth::id())->where('course_id', $course->id)->exists();
-        
-        if (!$exists) {
-            // Cari modul pertama untuk titik awal belajar
-            $firstModule = $course->modules()->orderBy('order_number', 'asc')->first();
+        $request->validate([
+            'payment_proof' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+        ]);
 
-            Enrollment::create([
-                'user_id' => Auth::id(),
-                'course_id' => $course->id,
-                'status' => 'paid',
-                'current_module_id' => $firstModule ? $firstModule->id : null,
-            ]);
-        }
+        $path = $request->file('payment_proof')->store('proofs', 'public');
 
-        // Arahkan langsung ke ruang belajar
-        return redirect()->route('student.learn', $course->id);
+        Enrollment::create([
+            'user_id' => Auth::id(),
+            'course_id' => $course->id,
+            'payment_proof' => $path,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Bukti berhasil diunggah, tunggu verifikasi admin.');
+    }
+
+    // SISI ADMIN: Daftar Transaksi Masuk
+    public function indexAdmin()
+    {
+        // Memastikan hanya admin yang bisa akses
+        if (Auth::user()->role !== 'admin') abort(403);
+
+        return Inertia::render('Admin/Enrollments/Index', [
+            'enrollments' => Enrollment::with(['user', 'course'])->where('status', 'pending')->get()
+        ]);
+    }
+
+    // SISI ADMIN: Verifikasi Pembayaran
+    public function approve(Enrollment $enrollment)
+    {
+        $enrollment->update(['status' => 'active']);
+        return back()->with('success', 'Pembayaran disetujui, akses kursus telah dibuka.');
     }
 }
