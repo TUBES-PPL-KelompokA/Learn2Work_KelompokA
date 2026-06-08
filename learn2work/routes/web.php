@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/assignments', [CourseAssignmentController::class, 'index'])->name('assignments.index');
     Route::post('/admin/assignments', [CourseAssignmentController::class, 'store'])->name('assignments.store');
     Route::patch('/admin/assignments/{course}', [CourseAssignmentController::class, 'update'])->name('assignments.update');
+    Route::delete('/admin/assignments/{course}', [CourseAssignmentController::class, 'destroy'])->name('assignments.destroy');
 });
 
 require __DIR__ . '/auth.php';

@@ -46,4 +46,11 @@ class CourseAssignmentController extends Controller
         $course->update(['teacher_id' => $request->teacher_id]);
         return back()->with('success', 'Penugasan guru berhasil diperbarui.');
     }
+
+    public function destroy(Course $course)
+    {
+        $course->update(['teacher_id' => null]);
+        
+        return back()->with('success', 'Penugasan guru berhasil dihapus.');
+    }
 }
