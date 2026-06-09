@@ -14,6 +14,14 @@ class EnrollmentController extends Controller
     // SISI STUDENT: Halaman Instruksi Pembayaran
     public function payment(Course $course)
     {
+        $existing = Enrollment::where('user_id', Auth::id())
+            ->where('course_id', $course->id)
+            ->first();
+
+        if ($existing) {
+            return redirect()->route('courses.show', $course->id)->with('error', 'Anda sudah terdaftar di kursus ini.');
+        }
+
         return Inertia::render('Student/Payment', [
             'course' => $course
         ]);
@@ -22,6 +30,14 @@ class EnrollmentController extends Controller
     // SISI STUDENT: Upload Bukti Bayar
     public function store(Request $request, Course $course)
     {
+        $existing = Enrollment::where('user_id', Auth::id())
+            ->where('course_id', $course->id)
+            ->first();
+
+        if ($existing) {
+            return redirect()->route('courses.show', $course->id)->with('error', 'Anda sudah terdaftar di kursus ini.');
+        }
+
         $request->validate([
             'payment_proof' => 'required|image|mimes:jpg,png,jpeg|max:2048',
         ]);

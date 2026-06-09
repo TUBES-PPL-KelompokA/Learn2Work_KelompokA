@@ -224,8 +224,26 @@ export default function Index({ courses }) {
                                                 🔒 Bukan Tugas Anda
                                             </span>
                                         )}
-                                        {user?.role === 'student' && (
-                                            Number(course.price) === 0 ? (
+                                        {user?.role === 'student' && (() => {
+                                            const enrollment = course.enrollments && course.enrollments[0];
+                                            if (enrollment) {
+                                                if (enrollment.status === 'pending') {
+                                                    return (
+                                                        <span className="flex-1 rounded-xl bg-amber-500/10 border border-amber-200 py-2 text-center text-xs font-bold text-amber-700 block">
+                                                            Menunggu Verifikasi ⏳
+                                                        </span>
+                                                    );
+                                                }
+                                                return (
+                                                    <Link
+                                                        href={route('student.learn', course.id)}
+                                                        className="flex-1 rounded-xl bg-indigo-600 py-2 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 block"
+                                                    >
+                                                        Belajar →
+                                                    </Link>
+                                                );
+                                            }
+                                            return Number(course.price) === 0 ? (
                                                 <Link
                                                     href={route('enrollments.free', course.id)}
                                                     method="post"
@@ -241,8 +259,8 @@ export default function Index({ courses }) {
                                                 >
                                                     Daftar
                                                 </Link>
-                                            )
-                                        )}
+                                            );
+                                        })()}
                                         {isAdmin && (
                                             <Link
                                                 href={route('courses.destroy', course.id)}

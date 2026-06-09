@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             // Relasi ke tabel users khusus untuk teacher
-            $table->foreignId('teacher_id')->constrained('users')->cascadeOnDelete(); 
+            $table->foreignId('teacher_id')->nullable()->constrained('users')->nullOnDelete(); 
             $table->string('title');
             $table->text('description');
             $table->integer('price'); // Harga kursus (karena sistem beli putus)
