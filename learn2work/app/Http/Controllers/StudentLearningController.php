@@ -15,10 +15,33 @@ class StudentLearningController extends Controller
      // Halaman Dashboard Student (Kumpulan kursus yang dibeli)
      public function dashboard()
      {
-         $enrollments = Enrollment::with('course')->where('user_id', Auth::id())->get();
+         $enrollments = Enrollment::with(['course.modules' => function($query) {
+             $query->orderBy('order_number', 'asc');
+         }])->where('user_id', Auth::id())->get();
          
          $enrollments->each(function($enrollment) {
              $enrollment->remaining_days = $enrollment->getRemainingDays();
+             
+             $modulesCount = $enrollment->course->modules->count();
+             if ($modulesCount === 0) {
+                 $enrollment->progress_percent = 0;
+             } elseif ($enrollment->status === 'completed') {
+                 $enrollment->progress_percent = 100;
+             } else {
+                 $currentModId = $enrollment->current_module_id;
+                 if (!$currentModId) {
+                     $enrollment->progress_percent = 0;
+                 } else {
+                     $position = 0;
+                     foreach ($enrollment->course->modules as $idx => $mod) {
+                         if ($mod->id === $currentModId) {
+                             $position = $idx;
+                             break;
+                         }
+                     }
+                     $enrollment->progress_percent = round(($position / $modulesCount) * 100);
+                 }
+             }
          });
 
          return Inertia::render('Student/Dashboard', [
@@ -32,11 +55,28 @@ class StudentLearningController extends Controller
          // Pastikan siswa benar-benar sudah beli kursus ini
          $enrollment = Enrollment::where('user_id', Auth::id())->where('course_id', $course->id)->firstOrFail();
          
+         // Jika status masih pending, blokir akses ke modul
+         if (!in_array($enrollment->status, ['paid', 'active', 'completed'])) {
+             return redirect()->route('student.dashboard')->with('error', 'Akses ditolak. Pendaftaran/Pembayaran Anda sedang dalam proses verifikasi oleh Admin.');
+         }
+
          // Ambil semua modul yang ada di kursus ini (urut dari yang pertama)
          $course->load(['modules' => function($q) { $q->orderBy('order_number', 'asc'); }]);
  
         // Tentukan modul mana yang sedang dibuka (berdasarkan parameter atau progress terakhir)
-        $activeModuleId = $module ? $module->id : ($enrollment->current_module_id ?: $course->modules->first()?->id);
+        $unlockedModuleId = $enrollment->current_module_id ?: $course->modules->first()?->id;
+        $unlockedIndex = $course->modules->search(fn($m) => $m->id === $unlockedModuleId);
+        if ($unlockedIndex === false) $unlockedIndex = 0;
+
+        if ($module) {
+            $requestedIndex = $course->modules->search(fn($m) => $m->id === $module->id);
+            if ($requestedIndex !== false && $requestedIndex > $unlockedIndex) {
+                return redirect()->route('student.learn', ['course' => $course->id, 'module' => $unlockedModuleId])
+                    ->with('error', 'Anda harus mempelajari modul secara berurutan. Selesaikan modul sebelumnya terlebih dahulu.');
+            }
+        }
+
+        $activeModuleId = $module ? $module->id : $unlockedModuleId;
         $activeModule = Module::with(['quiz' => function($q) {
             $q->with('questions');
         }])->find($activeModuleId);

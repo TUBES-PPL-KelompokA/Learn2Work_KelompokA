@@ -16,7 +16,7 @@ class Adif_CreateTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
 
             // 🔥 pasti ada user
-            $user = User::factory()->create();
+            $user = User::factory()->create(['role' => 'admin']);
 
             $browser->loginAs($user)
                 ->visit('/courses')
@@ -25,14 +25,14 @@ class Adif_CreateTest extends DuskTestCase
                 // DEBUG: cek apakah benar masuk halaman
                 ->assertPathIs('/courses')
 
-                // isi form (pakai selector umum dulu)
-                ->type('input', 'Test Course')
-                ->keys('input', '{tab}', 'Ini course testing', '{tab}', '10000')
+                // isi form
+                ->type('title', 'Test Course')
+                ->type('description', 'Ini course testing')
+                ->type('price', '10000')
+                ->type('duration_days', '30')
 
                 ->press('Simpan Kursus')
-                ->pause(2000)
-
-                ->assertSee('Test Course');
+                ->waitForText('Test Course', 10);
         });
     }
 }

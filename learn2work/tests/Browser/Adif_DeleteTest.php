@@ -18,7 +18,7 @@ class Adif_DeleteTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
 
             // 🔥 pastikan user ada
-            $user = User::factory()->create();
+            $user = User::factory()->create(['role' => 'teacher']);
 
             // 🔥 buat course
             $course = Course::create([
@@ -41,10 +41,11 @@ class Adif_DeleteTest extends DuskTestCase
                 ->pause(3000)
 
                 // pastikan module muncul
-                ->assertSee('Module 1')
+                ->assertSee('Module 1');
 
-                // klik hapus
-                ->press('Hapus')
+            $browser->script('window.confirm = function() { return true; };');
+
+            $browser->press('Hapus')
                 ->pause(2000)
 
                 // pastikan sudah hilang

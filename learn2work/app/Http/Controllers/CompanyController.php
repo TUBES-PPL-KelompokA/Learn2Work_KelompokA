@@ -18,6 +18,7 @@ class CompanyController extends Controller
 
     public function show(PartnerCompany $company)
     {
+        $company->load('internshipOpenings');
         return Inertia::render('Companies/Show', [
             'company' => $company
         ]);
@@ -29,6 +30,7 @@ class CompanyController extends Controller
             'name' => 'required|string|max:255',
             'industry' => 'required|string|max:255',
             'description' => 'required|string',
+            'address' => 'nullable|string',
             'contact_email' => 'nullable|email',
             'website_url' => 'nullable|url',
             'logo_url' => 'nullable|url',
@@ -45,6 +47,7 @@ class CompanyController extends Controller
             'name' => 'required|string|max:255',
             'industry' => 'required|string|max:255',
             'description' => 'required|string',
+            'address' => 'nullable|string',
             'contact_email' => 'nullable|email',
             'website_url' => 'nullable|url',
             'logo_url' => 'nullable|url',
@@ -59,5 +62,46 @@ class CompanyController extends Controller
     {
         $company->delete();
         return back();
+    }
+
+    // Manajemen Lowongan Magang per Mitra
+    public function storeOpening(Request $request, PartnerCompany $company)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'status' => 'required|in:open,closed',
+        ]);
+
+        $company->internshipOpenings()->create($request->all());
+
+        return back()->with('success', 'Lowongan magang berhasil ditambahkan!');
+    }
+
+    public function updateOpening(Request $request, \App\Models\InternshipOpening $opening)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'status' => 'required|in:open,closed',
+        ]);
+
+        $opening->update($request->all());
+
+        return back()->with('success', 'Lowongan magang berhasil diperbarui!');
+    }
+
+    public function destroyOpening(\App\Models\InternshipOpening $opening)
+    {
+        $opening->delete();
+        return back()->with('success', 'Lowongan magang berhasil dihapus!');
+    }
+
+    public function toggleOpening(\App\Models\InternshipOpening $opening)
+    {
+        $opening->update([
+            'status' => $opening->status === 'open' ? 'closed' : 'open'
+        ]);
+        return back()->with('success', 'Status lowongan berhasil diubah!');
     }
 }

@@ -118,7 +118,7 @@ export default function Submissions({ submissions }) {
                                     <textarea
                                         value={data.teacher_feedback}
                                         onChange={e => setData('teacher_feedback', e.target.value)}
-                                        className="w-full rounded-xl border border-slate-300 p-4 text-sm outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400"
+                                        className="w-full rounded-xl border border-slate-300 p-4 text-sm text-slate-800 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400"
                                         placeholder="Tulis saran atau evaluasi untuk siswa..."
                                         rows="4"
                                         required

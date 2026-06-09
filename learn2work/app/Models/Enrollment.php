@@ -7,7 +7,7 @@ use Carbon\Carbon;
 
 class Enrollment extends Model
 {
-    protected $fillable = ['user_id', 'course_id', 'status', 'current_module_id'];
+    protected $fillable = ['user_id', 'course_id', 'status', 'current_module_id', 'payment_proof'];
 
     public function getRemainingDays()
     {
