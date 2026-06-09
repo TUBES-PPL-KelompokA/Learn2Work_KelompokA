@@ -15,7 +15,7 @@ class Adif_CreateFailedTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
 
-            $user = User::where('email', 'teacher@learn2work.com')->first();
+            $user = User::factory()->create(['role' => 'admin']);
 
             $browser->loginAs($user)
                 ->visit('/courses')
@@ -28,7 +28,7 @@ class Adif_CreateFailedTest extends DuskTestCase
                 ->press('Simpan Kursus')
                 ->pause(2000)
 
-                ->assertDontSee('Test Course');
+                ->assertDontSee('Failed Test Course');
         });
     }
 }

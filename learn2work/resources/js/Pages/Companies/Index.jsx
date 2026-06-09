@@ -12,6 +12,7 @@ export default function Index({ companies }) {
         name: '',
         industry: '',
         description: '',
+        address: '',
         contact_email: '',
         website_url: '',
         logo_url: '',
@@ -37,6 +38,7 @@ export default function Index({ companies }) {
             name: company.name,
             industry: company.industry,
             description: company.description,
+            address: company.address || '',
             contact_email: company.contact_email || '',
             website_url: company.website_url || '',
             logo_url: company.logo_url || '',
@@ -87,91 +89,111 @@ export default function Index({ companies }) {
                             )}
                         </div>
                         <div className="p-6">
-                            <form onSubmit={submit} className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Nama Perusahaan</label>
-                                    <input 
-                                        type="text" 
-                                        dusk="company-name"
-                                        value={data.name} 
-                                        onChange={e => setData('name', e.target.value)} 
-                                        className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
-                                        placeholder="Cth: PT. Teknologi Maju"
-                                        required 
-                                    />
-                                    {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+                            <form onSubmit={submit} className="space-y-5">
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">Nama Perusahaan</label>
+                                        <input 
+                                            type="text" 
+                                            dusk="company-name"
+                                            value={data.name} 
+                                            onChange={e => setData('name', e.target.value)} 
+                                            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
+                                            placeholder="Cth: PT. Teknologi Maju"
+                                            required 
+                                        />
+                                        {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">Industri / Sektor</label>
+                                        <input 
+                                            type="text" 
+                                            dusk="industry"
+                                            placeholder="Cth: Teknologi, Perbankan" 
+                                            value={data.industry} 
+                                            onChange={e => setData('industry', e.target.value)} 
+                                            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
+                                            required 
+                                        />
+                                        {errors.industry && <p className="mt-1 text-xs text-red-500">{errors.industry}</p>}
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">Email Kontak</label>
+                                        <input 
+                                            type="email" 
+                                            dusk="contact-email"
+                                            value={data.contact_email} 
+                                            onChange={e => setData('contact_email', e.target.value)} 
+                                            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
+                                            placeholder="kontak@perusahaan.com"
+                                            required
+                                        />
+                                        {errors.contact_email && <p className="mt-1 text-xs text-red-500">{errors.contact_email}</p>}
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Industri / Sektor</label>
-                                    <input 
-                                        type="text" 
-                                        dusk="industry"
-                                        placeholder="Cth: Teknologi, Perbankan" 
-                                        value={data.industry} 
-                                        onChange={e => setData('industry', e.target.value)} 
-                                        className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
-                                        required 
-                                    />
-                                    {errors.industry && <p className="mt-1 text-xs text-red-500">{errors.industry}</p>}
+
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">Website URL</label>
+                                        <input 
+                                            type="url" 
+                                            dusk="website-url"
+                                            value={data.website_url} 
+                                            onChange={e => setData('website_url', e.target.value)} 
+                                            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
+                                            placeholder="https://..."
+                                            required
+                                        />
+                                        {errors.website_url && <p className="mt-1 text-xs text-red-500">{errors.website_url}</p>}
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">URL Logo (Opsional)</label>
+                                        <input 
+                                            type="url" 
+                                            dusk="logo-url"
+                                            value={data.logo_url} 
+                                            onChange={e => setData('logo_url', e.target.value)} 
+                                            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
+                                            placeholder="https://..."
+                                        />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Email Kontak</label>
-                                    <input 
-                                        type="email" 
-                                        dusk="contact-email"
-                                        value={data.contact_email} 
-                                        onChange={e => setData('contact_email', e.target.value)} 
-                                        className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
-                                        placeholder="kontak@perusahaan.com"
-                                        required
-                                    />
-                                    {errors.contact_email && <p className="mt-1 text-xs text-red-500">{errors.contact_email}</p>}
+
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">Deskripsi Singkat</label>
+                                        <textarea
+                                            dusk="description" 
+                                            value={data.description} 
+                                            onChange={e => setData('description', e.target.value)} 
+                                            className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
+                                            required 
+                                            rows="3"
+                                            placeholder="Berikan deskripsi singkat tentang perusahaan..."
+                                        ></textarea>
+                                        {errors.description && <p className="mt-1 text-xs text-red-500">{errors.description}</p>}
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">Alamat Lengkap Perusahaan</label>
+                                        <textarea
+                                            value={data.address} 
+                                            onChange={e => setData('address', e.target.value)} 
+                                            className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
+                                            rows="3"
+                                            placeholder="Masukkan alamat lengkap kantor operasional..."
+                                        ></textarea>
+                                        {errors.address && <p className="mt-1 text-xs text-red-500">{errors.address}</p>}
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Website URL</label>
-                                    <input 
-                                        type="url" 
-                                        dusk="website-url"
-                                        value={data.website_url} 
-                                        onChange={e => setData('website_url', e.target.value)} 
-                                        className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
-                                        placeholder="https://..."
-                                        required
-                                    />
-                                    {errors.website_url && <p className="mt-1 text-xs text-red-500">{errors.website_url}</p>}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">URL Logo (Opsional)</label>
-                                    <input 
-                                        type="url" 
-                                        dusk="logo-url"
-                                        value={data.logo_url} 
-                                        onChange={e => setData('logo_url', e.target.value)} 
-                                        className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
-                                        placeholder="https://..."
-                                    />
-                                </div>
-                                <div className="lg:col-span-1 flex items-end">
+
+                                <div className="flex justify-end pt-2 border-t border-slate-50">
                                     <button 
                                         type="submit" 
                                         disabled={processing} 
-                                        className="w-full rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-600/20 transition hover:bg-indigo-500 disabled:opacity-50"
+                                        className="rounded-xl bg-indigo-600 px-8 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-600/20 transition hover:bg-indigo-500 disabled:opacity-50"
                                     >
-                                        {processing ? 'Menyimpan...' : (editingCompany ? 'Simpan Perubahan' : 'Simpan Mitra')}
+                                        {processing ? 'Menyimpan...' : (editingCompany ? 'Simpan Perubahan' : '+ Simpan Mitra')}
                                     </button>
-                                </div>
-                                <div className="md:col-span-2 lg:col-span-4">
-                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Deskripsi Singkat</label>
-                                    <textarea
-                                        dusk="description" 
-                                        value={data.description} 
-                                        onChange={e => setData('description', e.target.value)} 
-                                        className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" 
-                                        required 
-                                        rows="2"
-                                        placeholder="Berikan deskripsi singkat tentang perusahaan..."
-                                    ></textarea>
-                                    {errors.description && <p className="mt-1 text-xs text-red-500">{errors.description}</p>}
                                 </div>
                             </form>
                         </div>

@@ -40,5 +40,27 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'role' => 'student',
         ]);
+
+        // Create Additional Teacher Users
+        User::factory()->create([
+            'name' => 'Budi Pengajar (Guru)',
+            'email' => 'teacher1@learn2work.com',
+            'password' => bcrypt('password'),
+            'role' => 'teacher',
+        ]);
+
+        User::factory()->create([
+            'name' => 'Siti Pengajar (Guru)',
+            'email' => 'teacher2@learn2work.com',
+            'password' => bcrypt('password'),
+            'role' => 'teacher',
+        ]);
+
+        User::factory()->create([
+            'name' => 'Ahmad Pengajar (Guru)',
+            'email' => 'teacher3@learn2work.com',
+            'password' => bcrypt('password'),
+            'role' => 'teacher',
+        ]);
     }
 }

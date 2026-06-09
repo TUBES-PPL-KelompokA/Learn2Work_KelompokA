@@ -1,8 +1,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
 export default function Learn({ course, activeModule, enrollment, submission, hasEssay }) {
     const { post, processing } = useForm();
+    const { flash } = usePage().props;
 
     const activeIndex = course.modules.findIndex(m => m.id === activeModule?.id);
     const nextModule = activeIndex >= 0 && activeIndex < course.modules.length - 1
@@ -29,6 +30,14 @@ export default function Learn({ course, activeModule, enrollment, submission, ha
             <Head title={course.title} />
 
             <div className="flex flex-col md:flex-row gap-0 md:gap-6 px-4 py-8 sm:px-6 lg:px-8">
+                
+                {/* Global Flash Success Banner */}
+                {flash?.success && (
+                    <div className="w-full mb-6 flex items-center gap-3 rounded-2xl bg-emerald-50 p-4 border border-emerald-100 text-emerald-900 shadow-sm animate-fade-in">
+                        <span className="text-xl">🎓</span>
+                        <p className="text-xs font-bold">{flash.success}</p>
+                    </div>
+                )}
 
                 {/* ── SIDEBAR: Module List ── */}
                 <aside className="w-full md:w-72 shrink-0">
@@ -233,8 +242,28 @@ export default function Learn({ course, activeModule, enrollment, submission, ha
                                             </button>
                                         </div>
                                     ) : (
-                                        <div className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md">
-                                            🎉 Kursus Selesai!
+                                        <div className="flex flex-col items-end gap-2">
+                                            {activeModule.quiz && (!submission || (!hasEssay && submission.score < 80)) && (
+                                                <p className="text-[10px] font-bold text-rose-500 uppercase">
+                                                    ⚠️ Harus Selesaikan Quiz Terakhir Untuk Menyelesaikan Kursus
+                                                </p>
+                                            )}
+                                            {enrollment.status === 'completed' ? (
+                                                <a
+                                                    href={route('certificate.download', course.id)}
+                                                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 text-xs font-bold text-white shadow-lg shadow-amber-500/30 transition hover:scale-105"
+                                                >
+                                                    🎓 Unduh Sertifikat domPDF
+                                                </a>
+                                            ) : (
+                                                <button
+                                                    onClick={() => post(route('enrollments.complete', course.id))}
+                                                    disabled={processing || (activeModule.quiz && (!submission || (!hasEssay && submission.score < 80)))}
+                                                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3 text-xs font-bold text-white shadow-md hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                                                >
+                                                    ✓ Tandai Selesai Kursus
+                                                </button>
+                                            )}
                                         </div>
                                     )}
                                 </div>

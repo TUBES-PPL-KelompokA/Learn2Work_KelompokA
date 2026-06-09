@@ -113,7 +113,7 @@ export default function Builder({ quiz }) {
                                     <textarea
                                         value={data.question_text}
                                         onChange={e => setData('question_text', e.target.value)}
-                                        className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400"
+                                        className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-800 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400"
                                         placeholder="Masukkan teks pertanyaan..."
                                         rows="2"
                                         required
@@ -130,7 +130,7 @@ export default function Builder({ quiz }) {
                                                 type="text"
                                                 value={data.options[opt]}
                                                 onChange={e => setData('options', { ...data.options, [opt]: e.target.value })}
-                                                className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400"
+                                                className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-800 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400"
                                                 placeholder={`Jawaban ${opt}`}
                                                 required
                                             />
@@ -141,7 +141,7 @@ export default function Builder({ quiz }) {
                                         <select
                                             value={data.correct_answer}
                                             onChange={e => setData('correct_answer', e.target.value)}
-                                            className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400"
+                                            className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-800 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400"
                                             required
                                         >
                                             <option value="">Pilih Kunci Jawaban</option>

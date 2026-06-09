@@ -81,7 +81,7 @@ export default function Take({ quiz }) {
                                             rows="5"
                                             value={data.answers.find(a => a.question_id === q.id)?.answer}
                                             onChange={e => handleAnswerChange(q.id, e.target.value)}
-                                            className="w-full rounded-xl border border-slate-300 p-4 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+                                            className="w-full rounded-xl border border-slate-300 p-4 text-sm text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
                                             placeholder="Tulis jawaban essay Anda di sini..."
                                             required
                                         ></textarea>
