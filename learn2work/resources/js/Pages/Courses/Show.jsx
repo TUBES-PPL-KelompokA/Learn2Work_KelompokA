@@ -3,7 +3,7 @@ import { Head, useForm, Link, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 // ── STUDENT VIEW: Course detail/info page ──────────────────────────────────
-function StudentCourseDetail({ course, isEnrolled }) {
+function StudentCourseDetail({ course, isEnrolled, enrollment }) {
     const { post, processing } = useForm();
 
     const isFreeCourse = course.level === 'basic' || Number(course.price) === 0;
@@ -78,13 +78,22 @@ function StudentCourseDetail({ course, isEnrolled }) {
                                         ? 'Gratis'
                                         : `Rp ${Number(course.price).toLocaleString('id-ID')}`}
                                 </p>
-                                {isEnrolled ? (
-                                    <Link
-                                        href={route('student.learn', { course: course.id })}
-                                        className="mt-3 block w-full rounded-xl bg-indigo-600 py-3 text-center text-sm font-semibold text-white shadow-md shadow-indigo-600/20 transition hover:bg-indigo-500"
-                                    >
-                                        Lanjut Belajar →
-                                    </Link>
+                                {enrollment ? (
+                                    enrollment.status === 'pending' ? (
+                                        <button
+                                            disabled
+                                            className="mt-3 block w-full rounded-xl bg-amber-500 py-3 text-center text-sm font-semibold text-white shadow-md shadow-amber-500/20 disabled:opacity-85"
+                                        >
+                                            Menunggu Verifikasi ⏳
+                                        </button>
+                                    ) : (
+                                        <Link
+                                            href={route('student.learn', { course: course.id })}
+                                            className="mt-3 block w-full rounded-xl bg-indigo-600 py-3 text-center text-sm font-semibold text-white shadow-md shadow-indigo-600/20 transition hover:bg-indigo-500"
+                                        >
+                                            Lanjut Belajar →
+                                        </Link>
+                                    )
                                 ) : isFreeCourse ? (
                                     <button
                                         onClick={handleEnrollFree}
@@ -343,7 +352,7 @@ function TeacherCourseManage({ course }) {
 }
 
 // ── MAIN COMPONENT ─────────────────────────────────────────────────────────
-export default function Show({ course, isEnrolled }) {
+export default function Show({ course, isEnrolled, enrollment }) {
     const { auth } = usePage().props;
     const user = auth.user;
     const isOwnerOrAdmin = user?.role === 'admin' || (user?.role === 'teacher' && course.teacher_id === user?.id);
@@ -369,7 +378,7 @@ export default function Show({ course, isEnrolled }) {
 
             {isOwnerOrAdmin
                 ? <TeacherCourseManage course={course} />
-                : <StudentCourseDetail course={course} isEnrolled={isEnrolled ?? false} />
+                : <StudentCourseDetail course={course} isEnrolled={isEnrolled ?? false} enrollment={enrollment} />
             }
         </AuthenticatedLayout>
     );

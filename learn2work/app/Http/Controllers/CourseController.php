@@ -13,7 +13,12 @@ class CourseController extends Controller
     public function index()
     {
         // Hanya menampilkan kursus milik teacher yang sedang login (sementara)
-        $courses = Course::with('teacher')->latest()->get();
+        $courses = Course::with('teacher')
+            ->with(['enrollments' => function($q) {
+                $q->where('user_id', \Illuminate\Support\Facades\Auth::id());
+            }])
+            ->latest()
+            ->get();
         return Inertia::render('Courses/Index', [
             'courses' => $courses
         ]);
@@ -33,7 +38,7 @@ class CourseController extends Controller
         ]);
 
         Course::create([
-            'teacher_id' => Auth::id(), // Otomatis ambil ID yang sedang login
+            'teacher_id' => Auth::user()->role === 'admin' ? null : Auth::id(),
             'title' => $request->title,
             'description' => $request->description,
             'price' => $price,
@@ -74,22 +79,19 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
-
         // Menampilkan detail kursus beserta modulnya (diurutkan berdasarkan nomor)
         $course->load(['modules' => function ($query) {
             $query->with('quiz')->orderBy('order_number', 'asc');
-        }, 'teacher']);
+        }, 'teacher', 'enrollments' => function($q) {
+            $q->where('user_id', \Illuminate\Support\Facades\Auth::id());
+        }]);
         
-        $isEnrolled = false;
-        if (Auth::check()) {
-            $isEnrolled = Enrollment::where('user_id', Auth::id())
-                ->where('course_id', $course->id)
-                ->exists();
-        }
+        $enrollment = \Illuminate\Support\Facades\Auth::check() ? $course->enrollments->first() : null;
         
         return Inertia::render('Courses/Show', [
             'course' => $course,
-            'isEnrolled' => $isEnrolled
+            'enrollment' => $enrollment,
+            'isEnrolled' => $enrollment !== null
         ]);
     }
 
