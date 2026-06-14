@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class InternshipApplicationController extends Controller
 {
@@ -29,5 +30,56 @@ class InternshipApplicationController extends Controller
 
         // Sesuai revisi: Proses bisnis magang berhenti di sini, beri tahu siswa untuk cek email
         return redirect()->back()->with('success', 'Pendaftaran berhasil dikirim! Proses seleksi selanjutnya akan diinformasikan oleh pihak perusahaan melalui email pribadi Anda. Silakan cek inbox secara berkala.');
+    }
+
+    // List applications for the authenticated student
+    public function index()
+    {
+        $applications = InternshipApplication::with(['partnerCompany', 'internshipOpening'])
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->get();
+
+        return view('internships.index', compact('applications'));
+    }
+
+    public function edit(InternshipApplication $internshipApplication)
+    {
+        if (auth()->id() !== $internshipApplication->user_id && auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+        return view('internships.edit', ['application' => $internshipApplication]);
+    }
+
+    public function update(Request $request, InternshipApplication $internshipApplication)
+    {
+        if (auth()->id() !== $internshipApplication->user_id) abort(403);
+
+        $request->validate([
+            'cv_file' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        // delete old file if exists
+        if ($internshipApplication->cv_path && Storage::disk('public')->exists($internshipApplication->cv_path)) {
+            Storage::disk('public')->delete($internshipApplication->cv_path);
+        }
+
+        $cvPath = $request->file('cv_file')->store('internship_cvs', 'public');
+        $internshipApplication->update(['cv_path' => $cvPath]);
+
+        return redirect()->route('internships.index')->with('success', 'CV berhasil diperbarui.');
+    }
+
+    public function destroy(InternshipApplication $internshipApplication)
+    {
+        if (auth()->id() !== $internshipApplication->user_id && auth()->user()->role !== 'admin') abort(403);
+
+        // delete file
+        if ($internshipApplication->cv_path && Storage::disk('public')->exists($internshipApplication->cv_path)) {
+            Storage::disk('public')->delete($internshipApplication->cv_path);
+        }
+
+        $internshipApplication->delete();
+        return redirect()->route('internships.index')->with('success', 'Pendaftaran magang berhasil dibatalkan.');
     }
 }

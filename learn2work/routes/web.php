@@ -101,6 +101,10 @@ Route::middleware('auth')->group(function () {
 
     // Rute Magang & Lowongan Mitra
     Route::post('/internships', [InternshipApplicationController::class, 'store'])->name('internships.store');
+    Route::get('/internships/my', [InternshipApplicationController::class, 'index'])->name('internships.index');
+    Route::get('/internships/{internshipApplication}/edit', [InternshipApplicationController::class, 'edit'])->name('internships.edit');
+    Route::patch('/internships/{internshipApplication}', [InternshipApplicationController::class, 'update'])->name('internships.update');
+    Route::delete('/internships/{internshipApplication}', [InternshipApplicationController::class, 'destroy'])->name('internships.destroy');
     
     Route::post('/companies/{company}/openings', [CompanyController::class, 'storeOpening'])->name('openings.store');
     Route::patch('/openings/{opening}', [CompanyController::class, 'updateOpening'])->name('openings.update');
