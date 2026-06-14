@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Course::class, 'teacher_id');
     }
+
+    public function internshipApplications()
+    {
+        return $this->hasMany(\App\Models\InternshipApplication::class, 'user_id');
+    }
 }
